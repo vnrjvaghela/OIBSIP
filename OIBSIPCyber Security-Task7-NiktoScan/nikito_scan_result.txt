@@ -1,0 +1,30 @@
+Nikto Scan Results 
+Target: http://localhost:8080
+Start Time: 2026-07-06 11:58:25 (GMT-4)
+
+[HIGH SEVERITY]
+1. Finding: [750500] /config/: Directory indexing found. Configuration information may be available remotely.
+   - Risk: The config directory is fully exposed. Attackers can browse this directory to find database configuration files, potentially leaking hardcoded backend credentials.
+   - Remediation: Disable directory indexing in the Apache configuration (Options -Indexes) and move sensitive config files outside the public web root.
+
+2. Finding: [001406] /server-status: The mod_status module reveals Apache information.
+   - Risk: Exposes internal server metrics, active connections, and potentially sensitive HTTP request strings to the public.
+   - Remediation: Restrict access to the /server-status endpoint to internal localhost IPs only, or disable the mod_status module entirely if not needed.
+
+[MEDIUM SEVERITY]
+3. Finding: [95] Cookies (PHPSESSID and security) created without the httponly flag.
+   - Risk: Without the HttpOnly flag, session cookies can be accessed via client-side scripts (JavaScript). If the application suffers from Cross-Site Scripting (XSS), an attacker can easily steal these cookies and hijack user sessions.
+   - Remediation: Set the HttpOnly flag to true when generating session cookies in PHP (session.cookie_httponly = 1).
+
+4. Finding: [600050] Server: Apache/2.4.25 appears to be outdated.
+   - Risk: Running an outdated web server exposes the underlying system to publicly known exploits and CVEs associated with that specific version.
+   - Remediation: Update the Apache service to the latest stable release (at least 2.4.66).
+
+[LOW / INFORMATIONAL SEVERITY]
+5. Finding: [013587] Suggested security headers missing (x-content-type-options, content-security-policy, strict-transport-security).
+   - Risk: The absence of these headers weakens the browser's ability to protect the user from MIME-sniffing, XSS, and unencrypted downgrade attacks.
+   - Remediation: Configure Apache to explicitly send these security headers in every HTTP response.
+
+6. Finding: [006333] /login.php: Admin login page/section found.
+   - Risk: Exposes the primary authentication surface to attackers, inviting brute-force or SQL injection attempts.
+   - Remediation: Implement rate limiting, enforce strong passwords, and consider hiding the admin portal behind a VPN or non-standard URL.
