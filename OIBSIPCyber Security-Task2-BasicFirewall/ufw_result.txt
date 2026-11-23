@@ -1,3 +1,31 @@
+ufw_configuration.sh 
+
+#!/bin/bash
+# ufw_configuration.sh - Basic UFW Setup Script
+
+echo "Installing UFW..."
+sudo apt-get install ufw -y
+
+echo "Resetting UFW to default state..."
+sudo ufw --force reset
+
+echo "Applying firewall rules..."
+sudo ufw allow ssh
+sudo ufw deny http
+sudo ufw allow https
+sudo ufw deny from 192.168.1.100
+
+echo "Enabling UFW..."
+sudo ufw --force enable
+
+echo "Current UFW Status:"
+sudo ufw status verbose
+
+
+
+
+
+
 ┌──(kali㉿kali)-[~]
 └─$ ./ufw_configuration.sh       
 Installing UFW...
